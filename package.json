@@ -1,0 +1,30 @@
+{
+  "name": "product-dev-suite-skills",
+  "version": "1.0.0",
+  "description": "Skills Claude Code para Product Manager Tech, Backend Engineer e Arquiteto de Software Senior - instalavel via npx",
+  "bin": {
+    "product-dev-suite-skills": "./bin/install.js"
+  },
+  "files": [
+    "bin",
+    "arquiteto-software-senior",
+    "backend-engineer",
+    "product-manager-tech"
+  ],
+  "engines": {
+    "node": ">=16.7.0"
+  },
+  "license": "MIT",
+  "author": "JonatasBTorres",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JonatasBTorres/product-dev-suite-skills.git"
+  },
+  "keywords": [
+    "claude",
+    "claude-code",
+    "skills",
+    "ai",
+    "agent"
+  ]
+}

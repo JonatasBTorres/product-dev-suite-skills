@@ -1,0 +1,35 @@
+%% C4 Model - Nível 2: Diagrama de Contêineres
+%% Quebra o sistema em suas aplicações/serviços/bancos de dados de alto nível
+%% e como se comunicam. Público-alvo: time técnico e arquitetos.
+
+C4Container
+    title Diagrama de Contêineres - [Nome do Sistema]
+
+    Person(usuario, "Usuário Final")
+
+    System_Boundary(sistemaPrincipal, "[Nome do Sistema]") {
+        Container(spa, "Web App", "React/TypeScript", "SPA consumida via navegador")
+        Container(mobile, "App Mobile", "React Native", "Aplicativo iOS/Android")
+        Container(bff, "BFF", "Node.js/GraphQL", "Agrega dados para os clientes")
+        Container(apiPedidos, "Serviço de Pedidos", "Java/Spring Boot", "Bounded context de Pedidos, expõe REST")
+        Container(apiPagamento, "Serviço de Pagamento", "Go", "Bounded context de Pagamento, expõe gRPC")
+        ContainerDb(dbPedidos, "Banco de Pedidos", "PostgreSQL", "Armazena dados transacionais de pedidos")
+        ContainerDb(cache, "Cache", "Redis", "Cache distribuído cache-aside")
+        Container(fila, "Barramento de Eventos", "Kafka", "Eventos de domínio entre bounded contexts")
+    }
+
+    System_Ext(gatewayPagamento, "Gateway de Pagamento Externo")
+
+    Rel(usuario, spa, "Usa", "HTTPS")
+    Rel(usuario, mobile, "Usa", "HTTPS")
+    Rel(spa, bff, "Consome", "GraphQL/HTTPS")
+    Rel(mobile, bff, "Consome", "GraphQL/HTTPS")
+    Rel(bff, apiPedidos, "Chama", "REST/HTTPS")
+    Rel(bff, apiPagamento, "Chama", "gRPC")
+    Rel(apiPedidos, dbPedidos, "Lê/escreve", "SQL")
+    Rel(apiPedidos, cache, "Cache-aside", "Redis Protocol")
+    Rel(apiPedidos, fila, "Publica evento PedidoCriado", "Kafka Protocol")
+    Rel(apiPagamento, fila, "Consome evento PedidoCriado", "Kafka Protocol")
+    Rel(apiPagamento, gatewayPagamento, "Processa pagamento", "REST/HTTPS")
+
+    UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="1")

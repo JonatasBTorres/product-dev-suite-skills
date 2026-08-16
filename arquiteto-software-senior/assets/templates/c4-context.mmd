@@ -1,0 +1,24 @@
+%% C4 Model - Nível 1: Diagrama de Contexto
+%% Substitua os nomes/descrições pelos do sistema real. Este nível mostra o
+%% sistema como uma caixa única, seus usuários e os sistemas externos com que
+%% interage. Público-alvo: qualquer stakeholder, técnico ou não.
+
+C4Context
+    title Diagrama de Contexto do Sistema - [Nome do Sistema]
+
+    Person(usuario, "Usuário Final", "Descrição de quem usa o sistema e por quê")
+    Person(admin, "Administrador", "Opera/configura o sistema")
+
+    System(sistemaPrincipal, "[Nome do Sistema]", "Breve descrição do que o sistema faz e para quem")
+
+    System_Ext(sistemaPagamento, "Gateway de Pagamento", "Sistema externo de terceiros, ex: Stripe/PagSeguro")
+    System_Ext(sistemaEmail, "Provedor de E-mail", "Sistema externo, ex: SendGrid/SES")
+    System_Ext(sistemaLegado, "Sistema Legado", "Sistema interno com o qual há integração via Anticorruption Layer")
+
+    Rel(usuario, sistemaPrincipal, "Usa", "HTTPS")
+    Rel(admin, sistemaPrincipal, "Administra", "HTTPS")
+    Rel(sistemaPrincipal, sistemaPagamento, "Processa pagamentos via", "REST/HTTPS")
+    Rel(sistemaPrincipal, sistemaEmail, "Envia notificações via", "REST/HTTPS")
+    Rel(sistemaPrincipal, sistemaLegado, "Sincroniza dados com", "Batch/API")
+
+    UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")

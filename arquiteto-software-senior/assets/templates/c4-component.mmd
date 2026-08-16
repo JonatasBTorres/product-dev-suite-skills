@@ -1,0 +1,31 @@
+%% C4 Model - Nível 3: Diagrama de Componentes
+%% Quebra UM contêiner específico em seus componentes internos. Use apenas
+%% para contêineres complexos que mereçam esse nível de detalhamento.
+
+C4Component
+    title Diagrama de Componentes - Serviço de Pedidos
+
+    Container(bff, "BFF", "Node.js/GraphQL", "Chamador externo ao contêiner")
+    ContainerDb(dbPedidos, "Banco de Pedidos", "PostgreSQL")
+    Container(fila, "Barramento de Eventos", "Kafka")
+
+    Container_Boundary(apiPedidos, "Serviço de Pedidos") {
+        Component(controller, "PedidoController", "REST Controller", "Expõe endpoints HTTP, validação de entrada")
+        Component(domainService, "PedidoDomainService", "Domain Service", "Regras de negócio puras do bounded context Pedidos")
+        Component(aggregate, "Pedido (Aggregate Root)", "Domain Entity", "Fronteira de consistência transacional")
+        Component(repository, "PedidoRepository", "Repository (Porta)", "Interface de persistência, sem detalhe de infra")
+        Component(repositoryImpl, "PedidoRepositoryJpa", "Adapter", "Implementação concreta via JPA/PostgreSQL")
+        Component(outbox, "OutboxPublisher", "Adapter", "Grava eventos na tabela outbox na mesma transação")
+        Component(anticorruption, "LegacyAnticorruptionLayer", "Adapter", "Traduz modelo de sistema legado para o modelo de domínio local")
+    }
+
+    Rel(bff, controller, "Chama", "REST/HTTPS")
+    Rel(controller, domainService, "Usa")
+    Rel(domainService, aggregate, "Opera sobre")
+    Rel(domainService, repository, "Usa (porta)")
+    Rel(repository, repositoryImpl, "Implementado por")
+    Rel(repositoryImpl, dbPedidos, "Lê/escreve", "SQL")
+    Rel(domainService, outbox, "Publica evento de domínio via")
+    Rel(outbox, dbPedidos, "Grava na tabela outbox (mesma transação)", "SQL")
+    Rel(outbox, fila, "CDC publica para", "Kafka Protocol")
+    Rel(domainService, anticorruption, "Consulta dado legado via")
