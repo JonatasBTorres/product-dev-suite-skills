@@ -58,11 +58,11 @@ Preencha com base em `non-functional-requirements-checklist.md`. Destaque os 2-3
 
 ## 6.1 Resumo compacto de decisões técnicas (opcional, recomendado para RFCs com múltiplas decisões)
 
-Tabela de referência rápida — um "ADR-lite" que resume as decisões principais sem exigir abrir cada ADR individual. Cada linha relevante ainda deveria ter um ADR completo por trás quando a decisão for genuinamente significativa/difícil de reverter:
+Tabela de referência rápida — um "ADR-lite" para consulta ágil, sem precisar abrir cada ADR completo para entender a decisão de relance. **Toda linha que se enquadre no critério de decisão cara de reverter (ver seção 10) já deve ter um ADR completo escrito e entregue junto deste RFC** — esta tabela é um resumo de navegação, não um substituto do ADR:
 
-| Decisão | Escolha | Justificativa |
-|---|---|---|
-| | | |
+| Decisão | Escolha | ADR completo | Justificativa (resumo) |
+|---|---|---|---|
+| | | ADR-XXX | |
 
 ## 7. Riscos e mitigação
 
@@ -80,9 +80,15 @@ Tabela de referência rápida — um "ADR-lite" que resume as decisões principa
 - **On-call:** este sistema gera novo runbook ou responsabilidade de plantão?
 - **Custo estimado (FinOps):** ver playbook 09
 
-## 10. Decisões arquiteturais decorrentes
+## 10. Decisões arquiteturais decorrentes (ADRs completos entregues junto deste RFC)
 
-[Liste quais ADRs este RFC vai gerar — decisões específicas e potencialmente caras de reverter, extraídas deste documento maior.]
+> **Critério de reversibilidade** (o que determina se uma decisão precisa de ADR completo): escolha de banco de dados, protocolo de comunicação entre serviços, estratégia de multi-tenancy, estilo arquitetural (monolito/microsserviços/EDA), escolha de linguagem para um novo serviço, ou qualquer decisão "one-way door" — cara ou lenta de reverter depois de implementada. Decisões táticas/facilmente reversíveis (nome de config, escolha de lib utilitária sem lock-in) não precisam de ADR próprio.
+
+| ADR | Decisão | Status |
+|---|---|---|
+| ADR-XXX | [Título curto] | Proposto/Aceito |
+
+> Cada `ADR-XXX` listado aqui deve existir como documento completo (`adr-template.md` preenchido) nesta mesma entrega — não apenas como item pendente para "formalizar depois".
 
 ## Histórico de Revisões
 
