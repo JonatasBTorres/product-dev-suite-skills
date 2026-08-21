@@ -104,6 +104,14 @@ Quando o Tier não estiver claro, pergunte objetivamente ou assuma Tier 1 e decl
 
 Se estiver rodando dentro de um projeto com arquivos em disco (Claude Code/Cowork), **verifique se já existem** `indice-mestre-rastreabilidade-template.md` (preenchido), um PRD, ou outros documentos do produto/arquitetura/engenharia no diretório do projeto antes de gerar algo do zero — liste o diretório, procure pelos prefixos de ID desta convenção, e leia o índice mestre existente se houver. Sessões novas não carregam memória automática do que foi gerado antes. Só assuma que não existe nada anterior depois de checar — não pergunte ao usuário como primeira alternativa quando dá para simplesmente olhar o projeto.
 
+**Numeração contínua, nunca reiniciada:** se o índice mestre já existir com IDs anteriores, todo ID novo continua a sequência a partir do maior já usado por prefixo — se o maior `REQ` existente é `REQ-045`, o próximo é `REQ-046`, nunca `REQ-001`. Reiniciar a numeração por cima de um projeto com histórico quebra a rastreabilidade de tudo que já foi construído em cima dos IDs antigos.
+
+**Quando pular essa checagem:** se a própria conversa já deixou explícito que é um projeto novo do zero ("protótipo novo", "MVP começando agora", "ainda não existe nada") — ou se não há acesso a arquivos em disco —, não há necessidade de listar diretório nem procurar índice mestre: comece a numeração em `-001` diretamente. A checagem existe para não *assumir* incorretamente que não há histórico quando pode haver; ela não deveria virar um passo obrigatório mecânico quando a resposta já é sabida pela conversa.
+
+**Terceiro caso — sistema real, mas sem índice mestre ainda:** se a checagem rodar (há disco, o sistema pode até estar em produção há anos) e não encontrar nenhum `indice-mestre-rastreabilidade-template.md` nem arquivos com esses prefixos, comece a numeração em `-001` mesmo assim — **isso é o resultado esperado**, não um erro nem um sinal de que algo está errado. `REQ-001` não afirma que este é o primeiro requisito que o sistema já teve; afirma apenas que é o primeiro que **esta convenção de rastreabilidade** registrou a partir de agora. Um sistema com 5 anos de produção pode começar seu índice mestre em `REQ-001` hoje sem qualquer contradição.
+
+**Documentação anterior em outro formato:** antes de assumir que não há nada, procure também por convenções comuns de documentação de produto que não usam esta nomenclatura — `docs/requirements/`, `docs/prd/`, ou um PRD em formato livre no README/wiki do projeto. Se encontrar algo assim, **não ignore silenciosamente nem gere REQ-XXX que dupliquem o que já existe** — sinalize ao usuário o que foi encontrado e pergunte se ele quer que os requisitos existentes sejam importados/referenciados no índice mestre novo, ou mantidos como estão e só documentação nova entrar na convenção de IDs.
+
 ---
 
 ## Quando NÃO aplicar o processo completo

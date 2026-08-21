@@ -45,6 +45,24 @@ Esta skill é o terceiro elo de uma cadeia: `product-manager-tech` (define o qu�
 
 Se a conversa incluir documentos com IDs `REQ-XXX`/`US-XXX`/`FLOW-XXX` (de `product-manager-tech`) ou `ADR-XXX`/`DOC-XXX` (de `arquiteto-software-senior`), trate-os como especificação, não como prosa solta. Antes de escrever código para uma feature nova, pergunte-se: existe um ADR para a decisão de arquitetura relevante? Se a conversa não trouxer os IDs explicitamente mas você estiver rodando num projeto com arquivos em disco (Claude Code/Cowork), **procure primeiro** por um `indice-mestre-rastreabilidade-template.md`, PRD ou documentos de arquitetura já existentes antes de assumir que não há contexto — a ausência de menção na conversa atual não significa ausência de documento no projeto.
 
+**Numeração contínua, nunca reiniciada:** se o índice mestre já existir com `TASK-XXX`/`IMPL-XXX` anteriores, todo ID novo continua a sequência a partir do maior já usado — nunca reinicie em `-001` por cima de um sistema com histórico de implementação.
+
+**Quando pular essa checagem:** se a conversa já deixou explícito que é um projeto novo do zero, ou não há acesso a arquivos em disco, comece a numeração em `-001` diretamente.
+
+**Terceiro caso — sistema em produção, mas sem `TASK-XXX`/`IMPL-XXX` ainda:** se a checagem rodar e não encontrar nada, comece em `-001` mesmo assim — é o resultado esperado para um sistema que nunca foi documentado com esta convenção, não um erro. `TASK-001` não afirma ser a primeira tarefa que esse sistema já teve, só a primeira registrada por esta convenção. Note que backlogs técnicos normalmente vivem em ferramentas externas (Jira, Linear, GitHub Issues) e não em arquivos no repositório — a checagem em disco cobre principalmente o índice mestre e ADRs/PRDs, não substitui perguntar se já existe um board de tarefas em uso fora do repositório quando isso for relevante para não duplicar trabalho já rastreado em outro lugar.
+
+### Codificando em sistema já existente (não apenas em projeto novo)
+
+O passo 1 do processo de trabalho ("Entender antes de codificar") pergunta se há contexto de sistema existente — quando houver acesso a arquivos em disco (Claude Code/Cowork), essa pergunta se torna uma ação, não apenas algo a perguntar ao usuário: **leia o código e os testes existentes do módulo relevante antes de escrever qualquer linha nova**, mesmo que a tarefa pareça pequena e isolada. Isso é literalmente o passo 1 do playbook "Refatorar sistema legado" (ver `references/engineering-practices.md`), mas se aplica igualmente a sistemas saudáveis, não só a legado.
+
+Ao adicionar uma feature a um sistema existente:
+- Siga as convenções já em uso (nomenclatura, estrutura de pastas, padrão de tratamento de erro, estilo de teste) — não introduza um padrão novo silenciosamente porque "é uma prática melhor" sem justificar a divergência.
+- Se um `ADR-XXX` cobre a decisão relevante, siga-o; se a feature exige romper com um padrão existente, isso é uma decisão nova que merece seu próprio ADR (acionar `arquiteto-software-senior` antes de codificar a divergência, não depois).
+- Não refatore código não relacionado à feature "já que está mexendo ali" sem avisar explicitamente — misturar refatoração não solicitada com a entrega da feature dificulta review e rollback.
+- Rode/considere os testes existentes como parte do "Definition of Done" da mudança — a mudança não deveria quebrar comportamento que já funcionava (ver characterization tests, `references/engineering-practices.md`).
+
+Se não houver acesso a arquivos em disco (conversa sem projeto anexado), siga o processo normal: pergunte pela stack e pelas convenções relevantes antes de gerar o código, em vez de assumir um padrão genérico.
+
 ### IDs que esta skill produz
 
 | Prefixo | O que identifica | Referencia |
@@ -71,7 +89,7 @@ Use `references/backlog-tecnico-sprints-template.md` para o backlog técnico e `
 Antes de escrever qualquer linha, responda:
 - Qual é o **problema real** a ser resolvido?
 - Qual é a **linguagem/stack** em uso? Se não informada, pergunte ou escolha com justificativa.
-- Há **contexto de sistema existente** (banco, autenticação, outros serviços)?
+- Há **contexto de sistema existente** (banco, autenticação, outros serviços)? Se houver arquivos em disco, ver "Codificando em sistema já existente" acima antes de prosseguir.
 - Quais são os **requisitos não-funcionais**: performance, escala, disponibilidade, segurança?
 
 ### 2. Pensar em arquitetura antes de implementar

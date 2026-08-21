@@ -3,7 +3,10 @@
 > Este documento é a fonte única de verdade sobre como PRD, backlog de produto, navigation map, fluxos críticos, arquitetura e backlog técnico se conectam. Atualize-o toda vez que um ID novo for criado em qualquer um dos documentos — nunca deixe um ID "órfão" sem entrada aqui. Cobre a cadeia completa `product-manager-tech` → `arquiteto-software-senior` → `backend-engineer`.
 
 **Última atualização:**
+**Rastreabilidade iniciada em:** [data em que este índice foi criado pela primeira vez]
 **Tier do produto:** [ver seção de Tiers no SKILL.md de product-manager-tech / arquiteto-software-senior]
+
+> ⚠️ **Nota de limitação:** a numeração `-001` de qualquer prefixo neste índice marca o início desta convenção de rastreabilidade, não a origem real do sistema. Um sistema em produção há anos pode legitimamente começar seu `REQ-001`/`ADR-001`/`TASK-001` na data acima, sem que isso signifique que essas foram as primeiras decisões/requisitos/tarefas que o sistema já teve. Se houver documentação anterior a esta data em outro formato (log de ADRs Nygard em `docs/adr/`, requisitos em wiki/Confluence, backlog em Jira/Linear), ela não é capturada automaticamente aqui — verifique com o time se algo assim existe antes de tratar este índice como o histórico completo do sistema.
 
 ---
 
