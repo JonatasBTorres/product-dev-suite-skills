@@ -12,6 +12,24 @@
 
 ---
 
+## Como organizar este backlog (documento único vs. fatiado)
+
+**Padrão: documento único.** Um backlog é uma lista viva e constantemente reordenada — mover uma task entre sprints deve ser editar uma linha, não recortar de um arquivo e colar em outro.
+
+**Quando fatiar:** a partir de ~80-100 tasks, ou quando múltiplos times editam o mesmo repositório em paralelo.
+
+**Como fatiar, se fatiar: por épico técnico, nunca por sprint.** Épico é estrutura estável; alocação de sprint muda toda semana.
+
+> ⚠️ **Se fatiar, proteja a rastreabilidade:** este documento-raiz mantém obrigatoriamente um índice apontando qual arquivo contém qual épico técnico, e o `indice-mestre-rastreabilidade-template.md` registra, para cada `TASK-XXX`, em qual arquivo ela vive. Tasks ainda não alocadas a sprint permanecem no documento-raiz.
+
+### Índice de Épicos Técnicos (preencher apenas se fatiado)
+
+| Épico técnico | US/ADR de origem | Arquivo | Tasks |
+|---|---|---|---|
+| | | `backlog-tecnico-epico-xxx.md` | TASK-XXX a TASK-YYY |
+
+---
+
 ## Épico Técnico: [Nome] — origem: US-XXX / ADR-XXX
 
 **Objetivo técnico:**

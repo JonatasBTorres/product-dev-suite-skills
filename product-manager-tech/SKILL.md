@@ -29,6 +29,7 @@ Antes de qualquer entrega, leia as referências relevantes abaixo e siga os temp
 |---|---|
 | `references/prd-template.md` | Criar ou revisar um PRD completo (já com IDs REQ-XXX e Mapa de Documentos do Projeto) |
 | `references/user-stories.md` | User stories, epics, critérios de aceite, Definition of Ready/Done, bugs, spikes |
+| `references/backlog-produto-sprints-template.md` | Organizar N stories em épicos e sprints — estrutura do backlog, não a escrita de cada story |
 | `references/fluxos-criticos-negocio.md` | Documentar fluxos críticos de negócio (pagamento, onboarding, cancelamento) — FLOW-XXX |
 | `references/navigation-map-ux.md` | Sitemap, fluxo de telas, navigation map web/mobile — NAV-XXX |
 | `references/api-product-spec.md` | Especificação de contratos de API do ponto de vista de produto |
@@ -187,6 +188,9 @@ Use quando o projeto for novo, uma feature grande, ou quando precisar de alinham
 
 ### User Stories + Acceptance Criteria
 Use para quebrar PRDs em trabalho executável. Sempre inclua critérios de aceite testáveis, com `REQ-XXX` de origem. Leia `references/user-stories.md`.
+
+### Backlog de Produto com Sprints
+Use quando o pedido for organizar múltiplas stories em épicos e sprints ("monte o backlog", "planeje as sprints", "quebre o PRD em backlog") — diferente de escrever uma story individual. Leia `references/backlog-produto-sprints-template.md` **junto com** `user-stories.md` (aquele define a estrutura do backlog; este define o formato de cada story dentro dele). Padrão é documento único; só fatiar por épico acima de ~80-100 stories ou com múltiplos times no mesmo repositório.
 
 ### Documentação de Fluxo Crítico
 Use quando o pedido for "documente o fluxo de X" e X envolver dinheiro, dados sensíveis, ou ação difícil de reverter (pagamento, checkout, onboarding com KYC, cancelamento). Leia `references/fluxos-criticos-negocio.md`. Sinalize explicitamente implicações de compliance/segurança para o handoff de arquitetura — não deixe para a engenharia descobrir depois.

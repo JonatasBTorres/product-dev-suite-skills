@@ -18,9 +18,11 @@
 
 ## User Stories (US) — nascem em `product-manager-tech`
 
-| ID | Descrição curta | Épico | REQ de origem | Sprint | Status | TASK relacionados |
-|---|---|---|---|---|---|---|
-| US-001 | | | REQ-XXX | | A fazer / Em progresso / Feito | |
+> Se o backlog estiver fatiado em vários arquivos (ver regra de fatiamento em `backlog-produto-sprints-template.md`), preencha a coluna "Arquivo" — sem ela, o índice continua correto mas deixa de servir para localizar a story.
+
+| ID | Descrição curta | Épico | REQ de origem | Arquivo | Sprint | Status | TASK relacionados |
+|---|---|---|---|---|---|---|---|
+| US-001 | | | REQ-XXX | `backlog.md` | | A fazer / Em progresso / Feito | |
 
 ## Fluxos Críticos (FLOW) — nascem em `product-manager-tech`
 
@@ -56,11 +58,11 @@ Documentos que cobrem um domínio inteiro (ex: Arquitetura de Segurança, Arquit
 
 ## Backlog Técnico (TASK) — nascem em `backend-engineer`
 
-Itens de implementação concreta: a tradução de uma `US-XXX`/`ADR-XXX` em trabalho de engenharia executável em sprint.
+Itens de implementação concreta: a tradução de uma `US-XXX`/`ADR-XXX` em trabalho de engenharia executável em sprint. Se o backlog técnico estiver fatiado, preencha a coluna "Arquivo".
 
-| ID | Descrição curta | US de origem | ADR de origem | Sprint técnico | Status |
-|---|---|---|---|---|---|
-| TASK-001 | | US-XXX | ADR-XXX | | A fazer / Em progresso / Feito |
+| ID | Descrição curta | US de origem | ADR de origem | Arquivo | Sprint técnico | Status |
+|---|---|---|---|---|---|---|
+| TASK-001 | | US-XXX | ADR-XXX | `backlog-tecnico.md` | | A fazer / Em progresso / Feito |
 
 ## Documentos Consolidados de Implementação (IMPL) — nascem em `backend-engineer`
 
