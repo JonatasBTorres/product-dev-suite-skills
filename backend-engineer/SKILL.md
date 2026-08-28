@@ -222,6 +222,49 @@ Todo código gerado deve:
 - Alertas baseados em sintomas, não causas
 - Para detalhes → leia `references/observability.md`
 
+### Verificação antes de declarar conclusão
+
+**Evidência antes de afirmação.** Nunca declare que algo está pronto, corrigido, passando ou funcionando sem ter executado a verificação correspondente e observado a saída real.
+
+- Antes de "os testes passam" → rode a suíte e leia o resultado. Não infira do fato de que o código "parece certo".
+- Antes de "o bug foi corrigido" → reproduza o cenário original e confirme que o comportamento mudou.
+- Antes de "a API está funcionando" → chame o endpoint e veja a resposta.
+- Antes de "o build está ok" → rode o build.
+
+Se não for possível verificar naquele momento (sem acesso ao ambiente, dependência indisponível, teste que exige infraestrutura externa), **diga isso explicitamente** em vez de afirmar sucesso com linguagem confiante: *"implementei X, mas não consegui rodar os testes aqui — rode `<comando>` para confirmar"*. Uma afirmação de sucesso não verificada é pior que nenhuma afirmação, porque transfere para o usuário uma confiança que não foi conquistada.
+
+Isso vale igualmente ao reportar trabalho feito por subagentes: não repasse "concluído" adiante sem checar o artefato.
+
+### Debugging sistemático — causa raiz antes de correção
+
+**Nenhuma correção proposta antes de investigar a causa raiz.** Corrigir sintoma sem entender a origem produz três coisas: o bug volta em outra forma, o código acumula remendos, e a próxima pessoa não entende por que aquele trecho existe.
+
+Ordem de trabalho diante de qualquer bug, teste falhando ou comportamento inesperado:
+
+1. **Leia a mensagem de erro inteira** — incluindo o stack trace completo, número de linha e código de erro. Erros costumam conter a resposta; pular a leitura para "ir direto ao código" é a forma mais comum de perder tempo.
+2. **Reproduza de forma consistente** — se não reproduz, não há como confirmar que a correção funcionou. Descubra os passos exatos antes de mexer em qualquer coisa.
+3. **Localize a causa, não o sintoma** — pergunte "por que isso aconteceu?" até chegar na origem estrutural (o mesmo raciocínio dos 5 Whys usado em postmortem).
+4. **Só então proponha a correção** — e verifique conforme a seção acima.
+
+Isso vale **especialmente** sob pressão de tempo, quando a tentação de chutar uma correção rápida é maior. Investigar é mais rápido que tentar correções às cegas em sequência.
+
+Se após investigação a causa raiz continuar desconhecida, diga isso — não apresente uma hipótese não confirmada como se fosse diagnóstico.
+
+### Testes e TDD — calibrado por Tier
+
+Escrever o teste antes da implementação (TDD) força a pensar na interface e nos casos de erro antes de se comprometer com uma solução, e garante que o teste realmente testa algo (você viu ele falhar). Mas TDD tem custo e nem todo contexto justifica esse custo:
+
+| Contexto | Postura |
+|---|---|
+| **Tier 0** — protótipo, spike de viabilidade, exploração onde a interface ainda é desconhecida | Não impor TDD. O objetivo é descobrir se a ideia funciona; testes vêm depois que a forma se estabiliza. |
+| **Tier 1+** — lógica de negócio, feature de produto real | TDD como padrão para lógica de domínio. Para código trivial (CRUD sem regra), teste depois é aceitável. |
+| **Correção de bug (qualquer Tier)** | Escreva primeiro o teste que reproduz o bug e falha. Sem isso, você não tem prova de que corrigiu, nem proteção contra regressão. |
+| **Código sensível (qualquer Tier)** — autenticação, autorização, pagamento, cálculo financeiro, dado pessoal | TDD obrigatório, sem exceção. O custo de um erro aqui excede em muito o custo de escrever o teste primeiro. |
+
+Ciclo, quando aplicável: escreva o teste → **rode e confirme que falha** (um teste que passa antes da implementação não está testando nada) → implemente o mínimo → rode e confirme que passa → commit.
+
+> Se o projeto usa o plugin Superpowers, o ciclo TDD imposto por ele é mais rigoroso que esta orientação e prevalece — ver "Interoperando com Superpowers".
+
 ---
 
 ## Escolha de linguagem e framework
@@ -350,11 +393,14 @@ Para detalhes → leia `references/languages-frameworks.md`
 → Ver playbooks em `references/engineering-practices.md`
 
 ### Debugging de problemas em produção
-1. Reproduzir o problema em ambiente isolado
-2. Usar logs + traces para identificar onde falha
-3. Verificar race condition, timeout, ou erro de dados
-4. Isolar causa com testes específicos
-5. Corrigir + adicionar teste de regressão + monitorar após deploy
+> Aplique primeiro o princípio "Debugging sistemático — causa raiz antes de correção": nenhuma correção proposta antes da investigação concluída.
+
+1. Ler a mensagem de erro/stack trace inteira antes de olhar o código
+2. Reproduzir o problema em ambiente isolado
+3. Usar logs + traces para identificar onde falha
+4. Verificar race condition, timeout, ou erro de dados
+5. Isolar causa raiz com testes específicos (escrever o teste que reproduz o bug e falha)
+6. Corrigir + confirmar que o teste passa + monitorar após deploy
 → Ver técnicas em `references/testing.md`
 
 ### Code review eficaz
@@ -500,10 +546,11 @@ Ao explicar decisões técnicas:
 ## Checklist completo de entrega
 
 ### Código
-- [ ] Funciona? Testei localmente ou executei o fluxo mentalmente
+- [ ] **Verificado?** Rodei os testes/build/endpoint e observei a saída real — não apenas "parece certo" (ver "Verificação antes de declarar conclusão"). Se não foi possível verificar, isso está dito explicitamente ao usuário
 - [ ] Erros tratados? Todo caminho de falha tem tratamento explícito
 - [ ] Seguro? Nenhum secret no código, inputs validados, queries parametrizadas
 - [ ] Testável? Dependências são injetáveis, lógica separada de I/O
+- [ ] Testes adequados ao Tier? (ver "Testes e TDD — calibrado por Tier"; para correção de bug, existe teste que reproduzia o bug)
 - [ ] Performático? Sem N+1, sem queries em loop, paginação implementada
 - [ ] Documentado? Interfaces/funções públicas têm docstring/JSDoc/Javadoc
 
