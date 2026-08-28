@@ -112,6 +112,52 @@ Quando ambos estão disponíveis, a orientação de *qualidade de código* conti
 
 6. **Respeite as garantias do Superpowers.** Ele exige worktree isolado e proíbe implementar direto em `main`/`master` sem consentimento explícito. Não contorne isso para "ganhar tempo" — é justamente a proteção que justifica usá-lo.
 
+### ⚠️ Subagentes não herdam esta skill — injete os padrões manualmente
+
+O `subagent-driven-development` declara explicitamente que subagentes *"nunca devem herdar o contexto ou histórico da sua sessão"*, e o `using-superpowers` instrui subagentes despachados a ignorar suas próprias skills. **Consequência: um subagente implementador não tem esta skill carregada.** Toda a orientação de qualidade (segurança, tratamento de erro, observabilidade, convenções da stack) não viaja junto automaticamente — ela precisa ser construída no prompt.
+
+Ao despachar subagentes implementadores, use a seção `## Context` do `implementer-prompt.md` para injetar, no mínimo, os **não-negociáveis** desta skill:
+
+```
+## Context
+[contexto arquitetural da task]
+
+Padrões obrigatórios deste projeto (não-negociáveis):
+- Segurança: queries parametrizadas (nunca concatenação de string), inputs
+  validados, sem secret hardcoded, autenticação/autorização verificadas na rota
+- Erros: tratamento explícito, nunca exceção silenciada; erro retornado ao
+  cliente não vaza stack trace nem detalhe interno
+- Observabilidade: log estruturado nos pontos críticos, sem dado sensível em log
+- Convenções: siga a estrutura de pastas, nomenclatura e padrão de teste já
+  em uso neste repositório — não introduza padrão novo sem justificativa
+- Rastreabilidade: mensagem de commit cita TASK-XXX
+[+ qualquer restrição específica do ADR-XXX que rege esta task]
+```
+
+Isso não é redundância: sem essa injeção, a única camada de qualidade que resta no subagente é o plano em si. Se a task for sensível (autenticação, pagamento, dado pessoal, qualquer coisa com implicação de segurança ou compliance), considere **não delegar a subagente** e usar `executing-plans` na sessão principal, onde esta skill continua carregada.
+
+### ⚠️ Converta "Rulings" em ADR ao reassumir
+
+O `subagent-driven-development` opera em execução contínua e resolve ambiguidades sozinho, registrando cada decisão num ledger como `Ruling: <decisão> — <porquê> — <custo se errado>`, sem parar para consultar o humano. Isso é bom para velocidade, mas cria um vazamento de rastreabilidade: **uma decisão estrutural tomada como Ruling não vira `ADR-XXX` automaticamente**, e some do índice mestre.
+
+Ao reassumir depois da execução, **leia o ledger de Rulings** e classifique cada um:
+
+| Tipo de ruling | Ação |
+|---|---|
+| Tático/reversível (nome de variável, ordem de parâmetros, detalhe de teste) | Nenhuma — não precisa de ADR |
+| Estrutural/caro de reverter (mudou abordagem de cache, formato de resposta de API, modelo de dados, dependência nova) | Vira `ADR-XXX` completo, ou é escalado para `arquiteto-software-senior` se contradisser um ADR existente |
+| **Contradiz um `ADR-XXX` existente** | Sinalize explicitamente ao usuário — não registre como decisão nova silenciosamente; a decisão anterior precisa ser formalmente substituída (ADRs são imutáveis, ver skill de arquitetura) |
+
+### Escolhendo entre `executing-plans` e `subagent-driven-development`
+
+O Superpowers recomenda `subagent-driven-development` como padrão quando há subagentes disponíveis. Para trabalho que precisa de rastreabilidade forte, essa recomendação merece ser ponderada:
+
+| Prefira `executing-plans` quando | Prefira `subagent-driven-development` quando |
+|---|---|
+| A task envolve segurança, pagamento, dado pessoal ou compliance | Tasks são independentes e de baixo risco |
+| A rastreabilidade importa mais que velocidade | Velocidade importa mais e o escopo é bem delimitado |
+| Você quer esta skill ativa durante toda a implementação | O plano é detalhado o suficiente para se sustentar sozinho |
+
 ---
 
 ## Processo de trabalho

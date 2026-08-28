@@ -44,9 +44,11 @@
 
 ## Decisões de Arquitetura (ADR) — nascem em `arquiteto-software-senior`
 
-| ID | Decisão (resumo) | REQ/FLOW que motivou | Status | TASK relacionados |
-|---|---|---|---|---|
-| ADR-001 | | REQ-XXX / FLOW-XXX | Proposto / Aceito / Substituído | |
+> Um `ADR-XXX` também pode nascer retroativamente de uma decisão tomada durante a execução (ex: um "Ruling" registrado por uma ferramenta de execução autônoma como Superpowers). Nesse caso, registre na coluna de origem que a decisão foi tomada em execução, não em design — isso deixa visível que ela não passou pelo processo normal de arquitetura e pode merecer revisão.
+
+| ID | Decisão (resumo) | REQ/FLOW que motivou | Origem | Status | TASK relacionados |
+|---|---|---|---|---|---|
+| ADR-001 | | REQ-XXX / FLOW-XXX | Design / Execução (ruling) | Proposto / Aceito / Substituído | |
 
 ## Documentos Consolidados de Arquitetura (DOC) — nascem em `arquiteto-software-senior`
 
