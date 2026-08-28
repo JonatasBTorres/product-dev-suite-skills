@@ -83,6 +83,37 @@ Use `references/backlog-tecnico-sprints-template.md` para o backlog técnico e `
 
 ---
 
+## Interoperando com Superpowers (quando disponível)
+
+[Superpowers](https://github.com/obra/superpowers) é um plugin de terceiros para Claude Code que fornece disciplina de execução: TDD passo a passo, debugging sistemático, verificação com evidência antes de declarar conclusão. Ele **não substitui esta skill** — as duas cobrem camadas diferentes e complementares:
+
+| | Esta skill (`backend-engineer`) | Superpowers |
+|---|---|---|
+| Responde | **O que** o código deve ser (padrões, segurança, performance, arquitetura) | **Em que ordem** trabalhar (teste primeiro, verificar, commitar) |
+| Produz | `TASK-XXX` rastreável a `US-XXX`/`ADR-XXX` | Plano de execução com passos TDD |
+
+Quando ambos estão disponíveis, a orientação de *qualidade de código* continua vindo desta skill; a *sequência de trabalho* segue o Superpowers. Onde o Superpowers for mais específico que esta skill (ex: esta pede "testes passando" no DoD, o Superpowers impõe teste-antes-da-implementação), o mais específico prevalece — não é contradição.
+
+### Protocolo de delegação
+
+1. **Detecte antes de assumir.** Verifique se as skills do Superpowers estão realmente disponíveis nesta sessão (é plugin de Claude Code; não existe em chat comum). Se não estiver, siga o processo normal desta skill sem mencionar o assunto.
+
+2. **Não deixe refazer discovery já feito.** O `using-superpowers` invoca `brainstorming` agressivamente em pedidos como "vamos construir X". Quando PRD/ADR já existem, isso duplicaria trabalho e poderia produzir um design divergente do que já foi decidido. Ao delegar, **aponte os documentos existentes como o design aprovado** em vez de deixar a conversa parecer um começo do zero:
+
+   > "O design já está fechado em `docs/ADR-001.md` e `docs/PRD-x.md`. Use `superpowers:writing-plans` para o plano de implementação da TASK-014. Spec: esses dois arquivos."
+
+   Isso não é burlar o gate de aprovação do Superpowers — o `brainstorming` exige aprovação humana antes de implementar, e essa aprovação continua necessária e válida. O que se evita é apenas **re-derivar** um design que o usuário já aprovou numa fase anterior. Se o usuário indicar que o design mudou, ou se os documentos estiverem incompletos/contraditórios, o caminho correto é voltar ao discovery (ou acionar `arquiteto-software-senior`), não improvisar.
+
+3. **Preencha o campo `Spec:` do plano.** O template do `writing-plans` já tem um campo `Spec:` esperando o documento de origem — é o encaixe natural para o PRD/ADR. Os requisitos não-funcionais (`REQ-XXX` de latência, disponibilidade) vão em "Global Constraints", com os valores exatos copiados do PRD.
+
+4. **Preserve o ID no nome do arquivo e nos commits.** O Superpowers salva planos em `docs/superpowers/plans/YYYY-MM-DD-<nome>.md`, fora desta convenção de IDs. Peça que o nome inclua o `TASK-XXX` (ex: `2026-08-27-task-014-share-endpoint.md`) e que as mensagens de commit citem `TASK-XXX` — sem isso, o índice mestre perde o rastro do trabalho executado.
+
+5. **Reassuma depois da execução.** Terminada a implementação pelo `executing-plans`/`subagent-driven-development`, volte a esta skill para fechar o ciclo que o Superpowers não cobre: marcar a `TASK-XXX` como concluída no backlog técnico, registrar o plano gerado no `indice-mestre-rastreabilidade-template.md`, e produzir `IMPL-XXX` quando solicitado (ex: performance medida contra o SLO do `REQ-XXX` correspondente).
+
+6. **Respeite as garantias do Superpowers.** Ele exige worktree isolado e proíbe implementar direto em `main`/`master` sem consentimento explícito. Não contorne isso para "ganhar tempo" — é justamente a proteção que justifica usá-lo.
+
+---
+
 ## Processo de trabalho
 
 ### 1. Entender antes de codificar

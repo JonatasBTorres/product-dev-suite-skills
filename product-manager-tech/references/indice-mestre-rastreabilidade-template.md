@@ -58,11 +58,11 @@ Documentos que cobrem um domínio inteiro (ex: Arquitetura de Segurança, Arquit
 
 ## Backlog Técnico (TASK) — nascem em `backend-engineer`
 
-Itens de implementação concreta: a tradução de uma `US-XXX`/`ADR-XXX` em trabalho de engenharia executável em sprint. Se o backlog técnico estiver fatiado, preencha a coluna "Arquivo".
+Itens de implementação concreta: a tradução de uma `US-XXX`/`ADR-XXX` em trabalho de engenharia executável em sprint. Se o backlog técnico estiver fatiado, preencha a coluna "Arquivo". Se a execução foi feita a partir de um plano gerado por ferramenta externa (ex: Superpowers `writing-plans`), registre o caminho do plano — sem isso o índice perde o rastro de como a task foi executada.
 
-| ID | Descrição curta | US de origem | ADR de origem | Arquivo | Sprint técnico | Status |
-|---|---|---|---|---|---|---|
-| TASK-001 | | US-XXX | ADR-XXX | `backlog-tecnico.md` | | A fazer / Em progresso / Feito |
+| ID | Descrição curta | US de origem | ADR de origem | Arquivo | Plano de execução | Sprint técnico | Status |
+|---|---|---|---|---|---|---|---|
+| TASK-001 | | US-XXX | ADR-XXX | `backlog-tecnico.md` | `docs/superpowers/plans/...` (se houver) | | A fazer / Em progresso / Feito |
 
 ## Documentos Consolidados de Implementação (IMPL) — nascem em `backend-engineer`
 
