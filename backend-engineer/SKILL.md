@@ -265,6 +265,42 @@ Ciclo, quando aplicável: escreva o teste → **rode e confirme que falha** (um 
 
 > Se o projeto usa o plugin Superpowers, o ciclo TDD imposto por ele é mais rigoroso que esta orientação e prevalece — ver "Interoperando com Superpowers".
 
+### Revisão adversarial — procure a falha, não a confirmação
+
+Escrever código e revisar código são atividades diferentes, e fazer as duas seguidas cria um ponto cego previsível: **relendo o próprio trabalho, a tendência é confirmar que está certo, não descobrir onde está errado.** Se um caso de erro passou despercebido na escrita, ele tende a passar despercebido de novo na releitura — a mesma cabeça, com as mesmas suposições, olhando o mesmo texto.
+
+Antes de entregar código relevante, faça uma **passada separada e explícita** com a postura invertida: assuma que existe um problema e procure-o. Não é reler; é atacar.
+
+**Perguntas de ataque — o que procurar ativamente:**
+
+*Entradas e limites*
+- O que acontece com entrada vazia, nula, negativa, zero, ou muito maior que o esperado?
+- E com string contendo caractere de escape, unicode, ou tamanho extremo?
+- Algum input chega ao banco, ao shell, ao HTML ou a um parser sem validação/escape?
+
+*Caminhos de falha*
+- Cada chamada externa (banco, API, fila, cache) tem tratamento se falhar, se demorar, ou se voltar resposta inesperada?
+- Existe caminho onde um erro é engolido e a execução continua como se tivesse dado certo?
+- Se a operação falha no meio, o estado fica consistente? Há algo escrito parcialmente?
+
+*Concorrência e ordem*
+- Duas execuções simultâneas desta função causam problema? (leitura-modificação-escrita sem transação/lock)
+- Se a mesma requisição chegar duas vezes (retry, duplo clique, webhook reenviado), o efeito é duplicado?
+
+*Segurança e dados*
+- Este endpoint verifica **autorização**, não só autenticação? Um usuário consegue acessar recurso de outro trocando um ID?
+- Algum dado sensível vai parar em log, mensagem de erro, ou resposta ao cliente?
+
+*Escala e degradação*
+- Isso funciona com 10 registros e com 10 milhões? Há query sem índice, sem paginação, ou N+1?
+- Se a dependência externa ficar lenta, isso derruba o resto do sistema ou degrada isolado?
+
+**Como reportar o resultado:** se a passada adversarial encontrar algo, corrija ou registre explicitamente — não a trate como formalidade cumprida. Se genuinamente não encontrar nada, diga o que foi verificado, em vez de afirmar de forma vaga que "está tudo certo". E se algum item acima não for aplicável ao contexto, diga isso também: uma revisão que declara sucesso sem dizer o que examinou não dá ao usuário como julgar se a revisão foi boa.
+
+**Quando essa passada é obrigatória:** código sensível (autenticação, autorização, pagamento, cálculo financeiro, dado pessoal), qualquer coisa que vá para produção em Tier 1+, e toda correção de bug (para não introduzir o próximo). Em protótipo Tier 0, é opcional.
+
+> Revisão adversarial complementa — não substitui — a revisão humana. Ver o playbook "Code review eficaz" para o processo com outras pessoas. Se o projeto usa Superpowers, `requesting-code-review` despacha um revisor independente, o que é mais forte que auto-revisão: prefira essa opção quando disponível.
+
 ---
 
 ## Escolha de linguagem e framework
@@ -404,9 +440,10 @@ Para detalhes → leia `references/languages-frameworks.md`
 → Ver técnicas em `references/testing.md`
 
 ### Code review eficaz
-1. Como autor: PR pequeno, descrição clara, auto-review antes
+1. Como autor: PR pequeno, descrição clara, revisão adversarial própria antes de abrir (ver "Revisão adversarial")
 2. Como revisor: priorizar segurança e bugs primeiro, sugestões depois
 3. Comentários construtivos com contexto e solução proposta
+4. Ao receber feedback: avaliar tecnicamente antes de implementar — se uma sugestão parecer incorreta ou baseada em premissa errada, diga isso com argumento, não implemente por deferência. Concordância automática com revisor sênior introduz bugs tanto quanto ignorar feedback.
 → Ver guia em `references/engineering-practices.md`
 
 ### Estimativa técnica
@@ -551,6 +588,7 @@ Ao explicar decisões técnicas:
 - [ ] Seguro? Nenhum secret no código, inputs validados, queries parametrizadas
 - [ ] Testável? Dependências são injetáveis, lógica separada de I/O
 - [ ] Testes adequados ao Tier? (ver "Testes e TDD — calibrado por Tier"; para correção de bug, existe teste que reproduzia o bug)
+- [ ] **Revisão adversarial feita?** Passada separada procurando falha (entradas-limite, caminhos de erro, concorrência, autorização, escala) — obrigatória para código sensível e Tier 1+
 - [ ] Performático? Sem N+1, sem queries em loop, paginação implementada
 - [ ] Documentado? Interfaces/funções públicas têm docstring/JSDoc/Javadoc
 
